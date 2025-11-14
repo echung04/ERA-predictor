@@ -3,3 +3,25 @@ title: "Project code"
 output: html_document
 ---
 
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(dplyr)
+library(ggplot2)
+library(fixest)
+library(patchwork)
+library(stargazer)
+library(nlme)
+library(plm)
+```
+
+
+
+```{r reading}
+
+pitching <- read.csv("pitching_2015_2024.csv")
+
+
+#selecting only pitchers with more than 100 IP because they are most likely starters and will have the most consistent data
+pitching_selected <- pitching[ pitching$IP > 100, c("WHIP", "ERA", "HR.9", "Age", "K.9", "Team")]
+
+```
