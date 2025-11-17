@@ -21,18 +21,27 @@ library(plm)
 pitching <- read.csv("pitching_2015_2024.csv")
 
 
-#selecting only pitchers with more than 100 IP because they are most likely starters and will have the most consistent data
-pitching_selected <- pitching[ pitching$IP > 100, c("WHIP", "ERA", "HR.9", "Age", "K.9", "Team", "Season")]
+#selecting only pitchers with more than 50 IP because they are most likely starters and will have the most consistent data
+pitching_selected <- pitching[ pitching$IP > 50, c("WHIP", "ERA", "HR.9", "Age", "K.9", "Team", "Season")]
 
 
 
 ```
 
 
-```{r}
-#Model 1 with only WHIP, the most influential variable based on prior experience
 
-model1 <- lm(ERA ~ WHIP, data = pitching_selected)
+```{r}
+model1 <- feols(ERA ~ WHIP | Season, data = pitching_selected)
 summary(model1)
+model2 <- feols(ERA ~ WHIP + HR.9 | Season, data = pitching_selected)
+summary(model2)
+```
+
+```{r}
+p_ols <- plm(ERA ~ WHIP + HR.9, data = pitching_selected, model = "pooling", index = "Season")
+p_fe  <- plm(ERA ~ WHIP + HR.9, data = pitching_selected, model = "within", index = "Season")
+
+phtest(p_fe, p_ols)
+
 ```
 
