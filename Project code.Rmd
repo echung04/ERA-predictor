@@ -31,10 +31,24 @@ pitching_selected <- pitching[ pitching$IP > 50, c("WHIP", "ERA", "HR.9", "Age",
 
 
 ```{r}
-model1 <- feols(ERA ~ WHIP | Season, data = pitching_selected)
+model1 <- lm(ERA ~ WHIP, data = pitching_selected)
 summary(model1)
-model2 <- feols(ERA ~ WHIP + HR.9 | Season, data = pitching_selected)
+model2 <- lm(ERA ~ WHIP + HR.9, data = pitching_selected)
 summary(model2)
+```
+
+
+```{r}
+anova(model1, model2)
+```
+```{r}
+model3 <- lm(ERA ~ WHIP + HR.9 + K.9, data = pitching_selected)
+summary(model3)
+anova(model2, model3)
+
+model4 <- lm(ERA ~ WHIP + HR.9 + K.9 + Age, data = pitching_selected)
+summary(model4)
+anova(model3, model4)
 ```
 
 ```{r}
