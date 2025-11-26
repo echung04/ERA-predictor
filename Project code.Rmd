@@ -12,6 +12,14 @@ library(patchwork)
 library(stargazer)
 library(nlme)
 library(plm)
+library(readr)
+library(tidyr)
+library(pscl)
+library(sandwich)
+library(lmtest)
+library(margins)
+library(car)
+library(effects)
 ```
 
 
@@ -49,6 +57,7 @@ anova(model2, model3)
 model4 <- lm(ERA ~ WHIP + HR.9 + K.9 + Age, data = pitching_selected)
 summary(model4)
 anova(model3, model4)
+vif(model4)
 ```
 ```{r}
 model5 <- feols(ERA ~ WHIP + HR.9 + K.9 + Age | Season, data = pitching_selected)
@@ -62,4 +71,5 @@ p_fe  <- plm(ERA ~ WHIP + HR.9 + K.9 + Age, data = pitching_selected, model = "w
 phtest(p_fe, p_ols)
 
 ```
+
 
