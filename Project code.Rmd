@@ -30,7 +30,7 @@ pitching <- read.csv("pitching_2015_2024.csv")
 
 
 #selecting only pitchers with more than 50 IP because they are most likely starters and will have the most consistent data
-pitching_selected <- pitching[ pitching$IP > 50, c("WHIP", "ERA", "HR.9", "Age", "K.9", "Team", "Season")]
+pitching_selected <- pitching[ pitching$IP > 50, c("WHIP", "ERA", "HR.9", "Age", "K.9", "Team", "Season", "BB.9", "AVG")]
 
 
 
@@ -72,4 +72,11 @@ phtest(p_fe, p_ols)
 
 ```
 
+
+```{r}
+model6 <- lm(ERA ~ WHIP + HR.9 + K.9 + Age + BB.9 + AVG, data = pitching_selected)
+summary(model6)
+anova(model4, model6)
+vif(model6)
+```
 
