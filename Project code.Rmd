@@ -50,10 +50,14 @@ model4 <- lm(ERA ~ WHIP + HR.9 + K.9 + Age, data = pitching_selected)
 summary(model4)
 anova(model3, model4)
 ```
+```{r}
+model5 <- feols(ERA ~ WHIP + HR.9 + K.9 + Age | Season, data = pitching_selected)
+summary(model5)
+```
 
 ```{r}
-p_ols <- plm(ERA ~ WHIP + HR.9, data = pitching_selected, model = "pooling", index = "Season")
-p_fe  <- plm(ERA ~ WHIP + HR.9, data = pitching_selected, model = "within", index = "Season")
+p_ols <- plm(ERA ~ WHIP + HR.9 + K.9 + Age, data = pitching_selected, model = "pooling", index = "Season")
+p_fe  <- plm(ERA ~ WHIP + HR.9 + K.9 + Age, data = pitching_selected, model = "within", index = "Season")
 
 phtest(p_fe, p_ols)
 
