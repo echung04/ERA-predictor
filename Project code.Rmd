@@ -30,7 +30,7 @@ library(nortest)
 pitching <- read.csv("pitching_2015_2024.csv")
 
 
-#selecting only pitchers with more than 50 IP because they are most likely starters and will have the most consistent data
+#selecting only pitchers with more than 50 IP because they will most likely have the most consistent data due to larger sample sizes.
 pitching_selected <- pitching[ pitching$IP > 50, c("WHIP", "ERA", "HR.9", "Age", "K.9", "Team", "Season", "BB.9", "AVG")]
 
 
@@ -61,13 +61,33 @@ anova(model3, model4)
 vif(model4)
 ```
 ```{r}
-model5 <- feols(ERA ~ WHIP + HR.9 + K.9 + Age | Season, data = pitching_selected)
+model5 <- lm(ERA ~ WHIP + HR.9 + K.9 + Age + Team, data = pitching_selected)
 summary(model5)
+anova(model4, model5)
+vif(model4)
+```
+```{r}
+pitching_selected$COL <- ifelse(pitching_selected$Team == "COL", 1, 0)
+pitching_selected$CHC <- ifelse(pitching_selected$Team == "CHC", 1, 0)
+pitching_selected$MIL <- ifelse(pitching_selected$Team == "MIL", 1, 0)
+pitching_selected$OAK <- ifelse(pitching_selected$Team == "OAK", 1, 0)
+
+
+modelTeam <- lm(ERA ~ WHIP + HR.9 + K.9 + Age + COL + CHC + MIL + OAK,
+             data = pitching_selected)
+summary(modelTeam)
+anova(model4, modelTeam)
+
 ```
 
 ```{r}
-p_ols <- plm(ERA ~ WHIP + HR.9 + K.9 + Age, data = pitching_selected, model = "pooling", index = "Season")
-p_fe  <- plm(ERA ~ WHIP + HR.9 + K.9 + Age, data = pitching_selected, model = "within", index = "Season")
+model6 <- feols(ERA ~ WHIP + HR.9 + K.9 + Age + COL + CHC + MIL + OAK | Season, data = pitching_selected)
+summary(model6)
+```
+
+```{r}
+p_ols <- plm(ERA ~ WHIP + HR.9 + K.9 + Age + COL + CHC + MIL + OAK, data = pitching_selected, model = "pooling", index = "Season")
+p_fe  <- plm(ERA ~ WHIP + HR.9 + K.9 + Age + COL + CHC + MIL + OAK, data = pitching_selected, model = "within", index = "Season")
 
 phtest(p_fe, p_ols)
 
@@ -75,17 +95,24 @@ phtest(p_fe, p_ols)
 
 
 ```{r}
-model6 <- lm(ERA ~ WHIP + HR.9 + K.9 + Age + BB.9 + AVG, data = pitching_selected)
+model7 <- lm(ERA ~ WHIP + HR.9 + K.9 + Age + BB.9 + AVG, data = pitching_selected)
 summary(model6)
-anova(model4, model6)
+anova(model4, model7)
 vif(model6)
 ```
 
 ```{r}
-residuals <- residuals(model5)
+residuals <- residuals(model6)
 hist(residuals)
 #Anderson-Darling Test
 ad_test <- ad.test(residuals)
 ad_test
+```
+
+```{r}
+plot(pitching_selected$WHIP, pitching_selected$ERA,main = "Relationship Between WHIP and ERA",xlab = "WHIP", ylab = "ERA")
+plot(pitching_selected$HR.9, pitching_selected$ERA,main = "Relationship Between HRs per 9 and ERA",xlab = "HR per 9", ylab = "ERA")
+plot(pitching_selected$Age, pitching_selected$ERA,main = "Relationship Between Age and ERA",xlab = "Age", ylab = "ERA")
+plot(pitching_selected$K.9, pitching_selected$ERA,main = "Relationship Between Strikeouts per 9 and ERA",xlab = "Strikeouts per 9", ylab = "ERA")
 ```
 
