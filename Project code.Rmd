@@ -20,6 +20,7 @@ library(lmtest)
 library(margins)
 library(car)
 library(effects)
+library(nortest)
 ```
 
 
@@ -78,5 +79,13 @@ model6 <- lm(ERA ~ WHIP + HR.9 + K.9 + Age + BB.9 + AVG, data = pitching_selecte
 summary(model6)
 anova(model4, model6)
 vif(model6)
+```
+
+```{r}
+residuals <- residuals(model5)
+hist(residuals)
+#Anderson-Darling Test
+ad_test <- ad.test(residuals)
+ad_test
 ```
 
