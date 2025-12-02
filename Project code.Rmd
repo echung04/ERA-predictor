@@ -98,7 +98,7 @@ phtest(p_fe, p_ols)
 model7 <- lm(ERA ~ WHIP + HR.9 + K.9 + Age + BB.9 + AVG, data = pitching_selected)
 summary(model6)
 anova(model4, model7)
-vif(model6)
+vif(model7)
 ```
 
 ```{r}
