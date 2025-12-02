@@ -115,4 +115,27 @@ plot(pitching_selected$HR.9, pitching_selected$ERA,main = "Relationship Between 
 plot(pitching_selected$Age, pitching_selected$ERA,main = "Relationship Between Age and ERA",xlab = "Age", ylab = "ERA")
 plot(pitching_selected$K.9, pitching_selected$ERA,main = "Relationship Between Strikeouts per 9 and ERA",xlab = "Strikeouts per 9", ylab = "ERA")
 ```
+```{r}
+.007/mean(pitching_selected$ERA)
+```
+
+```{r}
+# final model removed age because of practical significance
+modelFinal <- feols(ERA ~ WHIP + HR.9 + K.9 + COL + CHC + MIL + OAK | Season, data = pitching_selected)
+summary(modelFinal)
+
+
+modelTest <- feols(ERA ~ 1 | Season, data = pitching_selected)
+pitching_selected <- pitching_selected %>% mutate(ERA_resid2 = resid(modelTest))
+
+# How much of 'educ' is absorbed by FE? (R^2 ~ 1 => little identifying variation left)
+pitching_selected$ERA_resid2 <- resid(modelTest)
+
+era_var2     <- var(pitching_selected$ERA, na.rm = TRUE)
+era_residvar2 <- var(pitching_selected$ERA_resid2, na.rm = TRUE)
+
+# “FE R Squared” for the regressor: how much of educ is explained by FE?
+r2_fe_era <- 1 - era_residvar2 / era_var2
+r2_fe_era
+```
 
