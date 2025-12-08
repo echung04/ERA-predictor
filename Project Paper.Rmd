@@ -5,6 +5,13 @@ date: "December 13th, 2025"
 output:
   pdf_document: default
   html_document: default
+header-includes:
+  - \usepackage{fancyhdr}
+  - \pagestyle{fancy}
+  - \fancyhf{}
+  - \rfoot{\thepage}
+  - \usepackage{setspace}
+  - \doublespacing
 ---
 
 # Executive Summary
@@ -17,4 +24,6 @@ output:
   - A fixed effects model was used to control for season-to-season variation.
   - The model performance is evaluated by R-Squared, significance testing, and through comparison
 - **Key Findings**
+  - WHIP is the strongest predictor of ERA, while HR.9, K.9, and team all have a statistically and practically significnt impact on ERA as well. 
+  - Age was statistically significant but had very small practical significance. 
   - 
