@@ -1,9 +1,20 @@
 ---
 title: "482 Final Project Paper"
-output: html_document
 author: "Evan Chung, Krystal Liu"
 date: "December 13th, 2025"
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 # Executive Summary
 
+- **Purpose**
+  - This project is exploring which conventional pitching statistic can predict a pitcher's ERA in a given year and develops a statistical model predicting ERA, while discussing if using conventional stats is a good fit. 
+- **Data and Methods**
+  - The data set for this project was obtained from kaggle and has data from 2015-2024.
+  - Predictors examined: WHIP (Walks and Hits per Inning Pitched), HR.9 (Home Runs allowed per 9 Innings Pitched), K.9 (Strikeouts per 9 innings pitched), age, team, and season fixed effects.
+  - A fixed effects model was used to control for season-to-season variation.
+  - The model performance is evaluated by R-Squared, significance testing, and through comparison
+- **Key Findings**
+  - 
