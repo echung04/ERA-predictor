@@ -1,0 +1,9 @@
+---
+title: "482 Final Project Paper"
+output: html_document
+author: "Evan Chung, Krystal Liu"
+date: "December 13th, 2025"
+---
+
+# Executive Summary
+
