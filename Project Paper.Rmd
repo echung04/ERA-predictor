@@ -12,6 +12,7 @@ header-includes:
   - \rfoot{\thepage}
   - \usepackage{setspace}
   - \doublespacing
+  - \usepackage{booktabs}
 ---
 \maketitle
 \newpage
@@ -64,6 +65,65 @@ The data for this project was obtained from a data set on kaggle. It has pitchin
 The sample obtained for the project has 3141 observations. Each observation is a pitcher for one specific year that has at least 50 innings pitched. By limiting the data sets to pitchers with at least 50 innings pitched in a year, it allows for the pitchers who have very little innings and very outlier stats to be filtered out and not skew the results. 
 
 # Results
+
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(dplyr)
+library(ggplot2)
+library(fixest)
+library(patchwork)
+library(stargazer)
+library(nlme)
+library(plm)
+library(readr)
+library(tidyr)
+library(pscl)
+library(sandwich)
+library(lmtest)
+library(margins)
+library(car)
+library(effects)
+library(nortest)
+pitching <- read.csv("pitching_2015_2024.csv")
+
+
+#selecting only pitchers with more than 50 IP because they will most likely have the most consistent data due to larger sample sizes.
+pitching_selected <- pitching[ pitching$IP > 50, c("WHIP", "ERA", "HR.9", "Age", "K.9", "Team", "Season", "BB.9", "AVG")]
+
+```
+
+
+
+```{r results='asis'}
+model1 <- lm(ERA ~ WHIP, data = pitching_selected)
+
+pitching_selected$COL <- ifelse(pitching_selected$Team == "COL", 1, 0)
+pitching_selected$CHC <- ifelse(pitching_selected$Team == "CHC", 1, 0)
+pitching_selected$MIL <- ifelse(pitching_selected$Team == "MIL", 1, 0)
+pitching_selected$OAK <- ifelse(pitching_selected$Team == "OAK", 1, 0)
+
+
+modelTeam <- lm(ERA ~ WHIP + HR.9 + K.9 + COL + CHC + MIL + OAK,
+             data = pitching_selected)
+
+modelFE <- feols(ERA ~ WHIP + HR.9 + K.9 + Age + COL + CHC + MIL + OAK | Season, data = pitching_selected)
+
+
+stargazer(model1, modelTeam, type = "latex", title = "Measuring the Relationship Between ERA and Conventional Pitching Statistics", 
+          dep.var.labels = "ERA",
+          covariate.labels = c("WHIP", "HR.9", "K.9", "CHC", "COL", "MIL", "OAK"))
+```
+```{r results='asis'}
+etable(modelFE,
+       headers = c("Time FE Only"),
+       title = "Measuring the Relationship Between ERA and Conventional Pitching Statistics with Season Fixed Effects",
+       caption = "Measuring the Relationship Between ERA and Conventional Pitching Statistics with Season Fixed Effects",
+       dict = c(ERA = "ERA", "(Intercept)" = "Constant"),
+       tex = TRUE)
+```
+
 
 
 # Discussion Conclusions

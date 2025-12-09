@@ -27,7 +27,7 @@ library(nortest)
 
 
 
-```{r reading}
+```{r reading, include=TRUE}
 
 pitching <- read.csv("pitching_2015_2024.csv")
 
@@ -42,6 +42,7 @@ pitching_selected <- pitching[ pitching$IP > 50, c("WHIP", "ERA", "HR.9", "Age",
 
 
 ```{r}
+knitr::opts_chunk$set(echo = FALSE)
 model1 <- lm(ERA ~ WHIP, data = pitching_selected)
 summary(model1)
 model2 <- lm(ERA ~ WHIP + HR.9, data = pitching_selected)
