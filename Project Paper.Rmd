@@ -43,12 +43,33 @@ Baseball is a very popular sport not only in America but in many Asian and Latin
 
 As the world has moved more digital and relied on computers more, all aspects of life have changed. Sports is no different in this regard. New types of stats and way of predicting performance have come along and have impacted sports front offices to re-evaluate how they evaluate players when signing and paying them. Of the 4 most popular sport leagues that exist in the US, Baseball is one of the pioneers in these analytics used by sports front offices. 
 
-Publications on analytics in baseball have existed since 1964 and sabermetrics in baseball have existed since the 1980s. These analyses and sabermetrics provide an empirical analysis into performance of each player and teams overall. Many of these sabermetrics are not the typical statistics that people have historically used when looking at player performance like earned run average or batting average. The goal of these sabermetrics is to quantify more about the sport and provide more unbiased, mathematical ways to evaluate players. There are 4 main aspects that are looked at in sabermetrics, including hitting, pitching, base running, and fielding. However, despite existing for many years, there is still push back between if sabermetrics are a good tool to be using and if old school "eye tests" and traditional statistics are still sufficient in predicting player performance. This project will focus on the metrics of pitching and attempt to explore the conventional statistics that can be used to predict earned run average (ERA), a main statistic for evaluating a pitchers performance, used by MLB front offices and other sports analysts. It will then discuss if using traditional statistics to predict pitchers performance is still a good tool, or if potentially using more advanced sabermetrics is better. 
+Publications on analytics in baseball have existed since 1964 and sabermetrics in baseball have existed since the 1980s. These analyses and sabermetrics provide an empirical analysis into performance of each player and teams overall. Many of these saber metrics are not the typical statistics that people have historically used when looking at player performance like earned run average or batting average. The goal of these sabermetrics is to quantify more about the sport and provide more unbiased, mathematical ways to evaluate players. There are 4 main aspects that are looked at in sabermetrics, including hitting, pitching, base running, and fielding. However, despite existing for many years, there is still push back between if sabermetrics are a good tool to be using and if old school "eye tests" and traditional statistics are still sufficient in predicting player performance. 
+
+This project will focus on the metrics of pitching and attempt to explore the conventional statistics that can be used to predict earned run average (ERA), a main statistic for evaluating a pitchers performance, used by MLB front offices and other sports analysts. It will then discuss if using traditional statistics to predict pitchers performance is still a good tool, or if potentially using more advanced sabermetrics is better. We hypothesize that WHIP will have the most impact on ERA with age, team, strikeouts per 9 innings, and home runs per 9 innings all having a significant effect on ERA as well. 
 
 ## Literature Review
 
 Since the idea of using regression and statistics has existed in baseball for many years, there are many other sources that have explored a similar topics. 
 
+
+# Data and Identification Strategy
+
+## Data
+The data for this project was obtained from a data set on kaggle. It has pitching data from 2015-2024 in both the hitting and pitching categories and got its data from publicly available sites like espn and fangraphs that have MLB data. Our variable of interest is earned run average and we are looking at the pitcher-year level. 
+
+The sample obtained for the project has 3141 observations. Each observation is a pitcher for one specific year that has at least 50 innings pitched. By limiting the data sets to pitchers with at least 50 innings pitched in a year, it allows for the pitchers who have very little innings and very outlier stats to be filtered out and not skew the results. 
+
+# Results
+
+
+# Discussion Conclusions
+
+
 # References
 
 Beneventano , P., Berger, P., & Weinberg, B. (2012). Predicting Run Production and Run Prevention in Baseball: The Impact of Sabermetrics. International Journal of Business, Humanities and Technology , 2, 67–75. 
+
+Brendel, P. C. (n.d.). Predicting Earned Run Average in Major League Baseball . 
+
+
+# Appendix
