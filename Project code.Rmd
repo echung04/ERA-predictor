@@ -1,6 +1,8 @@
 ---
 title: "Project code"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -137,5 +139,23 @@ era_residvar2 <- var(pitching_selected$ERA_resid2, na.rm = TRUE)
 # “FE R Squared” for the regressor: how much of educ is explained by FE?
 r2_fe_era <- 1 - era_residvar2 / era_var2
 r2_fe_era
+```
+
+```{r}
+summary_table <- pitching_selected %>%
+  select(-Team, -Season) %>%       # drop non-numeric grouping variables
+  summarise(across(
+    .cols = everything(),
+    .fns = list(
+      mean = mean,
+      min = min,
+      max = max,
+      median = median,
+      sd = sd
+    ),
+    na.rm = TRUE
+  ))
+
+summary_table
 ```
 
