@@ -39,7 +39,7 @@ header-includes:
   
   
 # Introduction
-Baseball is a very popular sport not only in America but in many Asian and Latin American countries as well. Its impact has spanned over 100 years and influences popular culture and linguistics. As America's pasttime, it is undoubtedly an important facet when looking at American culture throughout the years. 
+Baseball is a very popular sport not only in America but in many Asian and Latin American countries as well. Its impact has spanned over 100 years and influences popular culture and linguistics. As America's past time, it is undoubtedly an important facet when looking at American culture throughout the years. 
 
 As the world has moved more digital and relied on computers more, all aspects of life have changed. Sports is no different in this regard. New types of stats and way of predicting performance have come along and have impacted sports front offices to re-evaluate how they evaluate players when signing and paying them. Of the 4 most popular sport leagues that exist in the US, Baseball is one of the pioneers in these analytics used by sports front offices. 
 
@@ -49,13 +49,13 @@ This project will focus on the metrics of pitching and attempt to explore the co
 
 ## Literature Review
 
-Since the idea of using regression and statistics has existed in baseball for many years, there are many other sources that have explored a similar topics. 
+Since the idea of using regression and statistics has existed in baseball for many years, there are many other sources that have explored a similar topics. To narrow down the statistics to look at as the explanatory variables for ERA, the paper *Predicting Earned Run Average in Major League Baseball* by Paul C. Brendel was a valuable tool to look at. This paper goes into predicting ERA of pitchers using simple linear regression. It looks at 4 different predictors of individual metrics for a pitcher, including strikeout to walk ratio, fastball velocity, first pitch strike percentage, and groundball to flyball percentage. These statistics look 
 
 
 # Data and Identification Strategy
 
 ## Data
-The data for this project was obtained from a data set on kaggle. It has pitching data from 2015-2024 in both the hitting and pitching categories and got its data from publicly available sites like espn and fangraphs that have MLB data. Our variable of interest is earned run average and we are looking at the pitcher-year level. 
+The data for this project was obtained from a data set on kaggle. It has pitching data from 2015-2024 in both the hitting and pitching categories and got its data from publicly available sites like ESPN and fangraphs that have MLB data. Our variable of interest is earned run average and we are looking at the pitcher-year level. 
 
 The sample obtained for the project has 3141 observations. Each observation is a pitcher for one specific year that has at least 50 innings pitched. By limiting the data sets to pitchers with at least 50 innings pitched in a year, it allows for the pitchers who have very little innings and very outlier stats to be filtered out and not skew the results. 
 
