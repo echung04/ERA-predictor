@@ -136,6 +136,19 @@ The next model in Table 1 is when adding in the rest of the variables. As noted 
 
 The model in Table 2 is the output from the model with the same parameters as the previous one, however it is controlling for fixed effects on season. It has an R-Squared value of .79, meaning 79% of the variation in ERA is explained by this model. 
 
+Our hypothesized equation looked like:
+$$
+\text{ERA}_{it} = \beta_0 + \beta_1 \text{WHIP}_{it} + \beta_2 \text{HR/9}_{it} + \beta_3 \text{K/9}_{it} + \beta_4 \text{Age}_{it} + \beta_5 \text{Team}_i  + \gamma_t + \varepsilon_{it}
+$$
+Note that team is listed here, it will eventually turn into multiple dichotomous variables, but it was unknown at the beginning of the project which of the specific teams would have significance. So, team is a placeholder until that was discovered.
+
+The final equation with the actual values for the coefficients ended up being:
+
+$$
+\widehat{\text{ERA}}_{it} = 3.691 \cdot \text{WHIP}_{it} + 1.022 \cdot \text{HR/9}_{it} - .0307 \cdot \text{K/9}_{it} + .1949 \cdot \text{COL}_i - 0.1597 \cdot \text{CHC}_i + .1627 \cdot \text{OAK}_i - .12 \cdot \text{MIL}_i+ \gamma_t + \varepsilon_{it}
+$$
+
+
 ### Interpretation
 
 Using the fixed-effects model seen in Table 2, the interpretation for each variable is as follows. For every additional walk or hit allowed in a inning pitched, it is associated with, on average, a 3.677 increase in ERA, controlling for all other variables and fixed effects on season. For each additional home run let up per 9 innings, it is associated with a 1.026 increase in ERA, on average, controlling for all other variables and fixed effects on season. For each additional strikeout per 9 innings pitched, it is associated with a .0316 decrease in ERA, on average, controlling for all other variables and fixed effects on season. If a pitcher is on Colorado, it is associated with a .1905 ERA higher than a pitcher who is not on Colorado, on average, controlling for all other variables and fixed effects on season. If a pitcher is on the Chicago Cubs, it is associated with a .1508 ERA lower than someone who is not on the Chicago Cubs, on average, controlling for all other variables and fixed effects on season. If a pitcher is on Milwaukee, it is associated with a .1200 lower ERA, on average, than a pitcher who is not on Milwaukee, controlling for all other variables and fixed effects on season. If a pitcher is on Oakland, it is associated with a .1606 ERA increase than a pitcher not on Oakland, on average, controlling for all other variables and fixed effects on season. All of these variables are statistically significant at the .05 level.
