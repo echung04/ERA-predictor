@@ -62,10 +62,15 @@ The paper *Using the James-Stein Estimator to Predict Pitcher Performance* takes
 ## Data
 The data for this project was obtained from a data set on kaggle. It has pitching data from 2015-2024 in both the hitting and pitching categories and got its data from publicly available sites like ESPN and fangraphs that have MLB data. Our variable of interest is earned run average and we are looking at the pitcher-year level. 
 
-The sample obtained for the project has 3141 observations. Each observation is a pitcher for one specific year that has at least 50 innings pitched. By limiting the data sets to pitchers with at least 50 innings pitched in a year, it allows for the pitchers who have very little innings and very outlier stats to be filtered out and not skew the results. 
+The sample obtained for the project has 3141 observations. Each observation is a pitcher for one specific year that has at least 50 innings pitched. By limiting the data sets to pitchers with at least 50 innings pitched in a year, it allows for the pitchers who have very little innings and very outlier stats to be filtered out and not skew the results. In cases where a player plays for multiple teams in one season due to mid-season trades, the team is omitted for that player to avoid overestimating or underestimating the significance of a team.
+
+For every observation at the pitcher-year level, we looked at WHIP (Walks and Hits per Inning Pitched), HR.9 (Home Runs allowed per 9 Innings Pitched), age of the player, K.9 (Strikeouts per 9 Innings Pitched), team the player played on, the season of the player's statistics, BB.9 (Walks per 9 Innings Pitched), batting average against a pitcher, shown as a rate of hits per at bat against the listed pitcher, and ERA (earned run average), which was our dependent variable.
+
+Our initial theoretical model regresses ERA on WHIP. Our second model regresses ERA on WHIP, HR.9, K.9, and four teams that were used as dichotomous variables. The four teams included the Colorado Rockies, Chicago Cubs, Milwaukee Brewers, and Oakland Athletics, which were chosen by regressing ERA on WHIP, HR.9, K.9, and all 30 MLB teams, then picking out the four teams that displayed statistical significance. Our final model regresses ERA on WHIP, HR.9, K.9, the four selected teams from our second model, and includes an addition of fixed effects for season, indicated by year, to account for natural variation from year to year.
+
+A regression was done on all the teams and the teams that were found to be statistically significant in explaining ERA were added to the mode. These were put in as dichotomous variables instead of a fixed effect on team because it was hypothesized that most teams would not have a significant effect on a pitcher's ERA, but some outlier teams would have some effect. This was also an attempt of capturing variability from each teams fielding ability and park factors, as these were not included in the data set. A better defense could lower a pitcher's ERA significantly and certain fields have different dimensions making it easier or harder to hit home runs. For example, Colorado's stadium is located in Denver, and with its elevation that is much higher than every other ballpark in the league, it is easier to hit home runs there. This means a pitcher on Colorado, who will pitch a majority of their appearances at their home ballpark of Denver, will let up more home runs, on average, than their counterparts not on Colorado's team.
 
 # Results
-
 
 
 ```{r setup, include=FALSE}
@@ -108,7 +113,7 @@ pitching_selected$OAK <- ifelse(pitching_selected$Team == "OAK", 1, 0)
 modelTeam <- lm(ERA ~ WHIP + HR.9 + K.9 + COL + CHC + MIL + OAK,
              data = pitching_selected)
 
-modelFE <- feols(ERA ~ WHIP + HR.9 + K.9 + Age + COL + CHC + MIL + OAK | Season, data = pitching_selected)
+modelFE <- feols(ERA ~ WHIP + HR.9 + K.9 + COL + CHC + MIL + OAK | Season, data = pitching_selected)
 
 
 stargazer(model1, modelTeam, type = "latex", title = "Measuring the Relationship Between ERA and Conventional Pitching Statistics", 
@@ -125,6 +130,16 @@ etable(modelFE,
 ```
 
 
+From the two tables seen, there are three different models. The first model in Table 1 is showing WHIP as a sole predictor of ERA. It's R-Squared value is .644, which is the highest of any individual statistic looked at. This one specific variable is already explaining 64.4% of the variability in ERA, which is a large amount. 
+
+The next model in Table 1 is when adding in the rest of the variables. As noted by the asterisks, each of these variables is statistically significant at the .05 level. Age was originally included with these other variables here, but was removed due to its small practical significance. As seen in Appendix A, the practical significance of age was very small. A one year change was only associated with a .2% of the mean change, thus this does not have much practical significance when trying to predict ERA. This model saw an increase in the R-Squared value, jumping to .788. This model's improved R-Squared value would make it a much better fit for predicting ERA than the first model, but there is still one model left to look at.
+
+The model in Table 2 is the output from the model with the same parameters as the previous one, however it is controlling for fixed effects on season. It has an R-Squared value of .79, meaning 79% of the variation in ERA is explained by this model. 
+
+### Interpretation
+
+Using the fixed-effects model seen in Table 2, the interpretation for each variable is as follows. For every additional walk or hit allowed in a inning pitched, it is associated with, on average, a 3.677 increase in ERA, controlling for all other variables and fixed effects on season. For each additional home run let up per 9 innings, it is associated with a 1.026 increase in ERA, on average, controlling for all other variables and fixed effects on season. For each additional strikeout per 9 innings pitched, it is associated with a .0316 decrease in ERA, on average, controlling for all other variables and fixed effects on season. If a pitcher is on Colorado, it is associated with a .1905 ERA higher than a pitcher who is not on Colorado, on average, controlling for all other variables and fixed effects on season. If a pitcher is on the Chicago Cubs, it is associated with a .1508 ERA lower than someone who is not on the Chicago Cubs, on average, controlling for all other variables and fixed effects on season. If a pitcher is on Milwaukee, it is associated with a .1200 lower ERA, on average, than a pitcher who is not on Milwaukee, controlling for all other variables and fixed effects on season. If a pitcher is on Oakland, it is associated with a .1606 ERA increase than a pitcher not on Oakland, on average, controlling for all other variables and fixed effects on season. All of these variables are statistically significant at the .05 level.
+
 
 # Discussion Conclusions
 
@@ -139,3 +154,31 @@ Using the James-Stein Estimator to Predict Pitcher Performance. (n.d.).
 
 
 # Appendix
+
+## A
+
+```{r results='asis'}
+modelAge <- lm(ERA ~ WHIP + HR.9 + K.9 + Age + BB.9 + AVG, data = pitching_selected)
+coef(modelAge)["Age"]
+mean(pitching_selected$ERA)
+.00945/3.9816
+```
+Age divided by the average value for ERA is .009/3.98 and gave us a value of .002 for the practical significance. 
+
+## B
+
+```{r}
+model7 <- lm(ERA ~ WHIP + HR.9 + K.9 + Age + BB.9 + AVG, data = pitching_selected)
+vif(model7)
+```
+
+## C
+
+```{r}
+residuals <- residuals(modelFE)
+hist(residuals)
+#Anderson-Darling Test
+ad_test <- ad.test(residuals)
+ad_test
+```
+
