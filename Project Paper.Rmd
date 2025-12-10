@@ -180,12 +180,16 @@ Age divided by the average value for ERA is .009/3.98 and gave us a value of .00
 
 ## B
 
+VIF scores for continuous variables with suspected multicollinearity. Walks per 9 and Batting Average Against were very correlated with WHIP. 
+
 ```{r}
 model7 <- lm(ERA ~ WHIP + HR.9 + K.9 + Age + BB.9 + AVG, data = pitching_selected)
 vif(model7)
 ```
 
 ## C
+
+Normality testing with Anderson-Darling test and histogram
 
 ```{r}
 residuals <- residuals(modelFE)
