@@ -132,7 +132,7 @@ etable(modelFE,
        dict = c(ERA = "ERA", "(Intercept)" = "Constant"),
        tex = TRUE)
 ```
-
+\hfill\break
 
 From the two tables seen, there are three different models. The first model in Table 1 is showing WHIP as a sole predictor of ERA. It's R-Squared value is .644, which is the highest of any individual statistic looked at. This one specific variable is already explaining 64.4% of the variability in ERA, which is a large amount. 
 
