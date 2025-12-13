@@ -88,13 +88,6 @@ model6 <- feols(ERA ~ WHIP + HR.9 + K.9 + Age + COL + CHC + MIL + OAK | Season, 
 summary(model6)
 ```
 
-```{r}
-p_ols <- plm(ERA ~ WHIP + HR.9 + K.9 + Age + COL + CHC + MIL + OAK, data = pitching_selected, model = "pooling", index = "Season")
-p_fe  <- plm(ERA ~ WHIP + HR.9 + K.9 + Age + COL + CHC + MIL + OAK, data = pitching_selected, model = "within", index = "Season")
-
-phtest(p_fe, p_ols)
-
-```
 
 
 ```{r}
