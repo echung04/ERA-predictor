@@ -43,14 +43,17 @@ pitching_selected <- pitching[ pitching$IP > 50, c("WHIP", "ERA", "HR.9", "Age",
 
 ```{r}
 knitr::opts_chunk$set(echo = FALSE)
+# First Model
 model1 <- lm(ERA ~ WHIP, data = pitching_selected)
 summary(model1)
+#Start iteratively adding variables
 model2 <- lm(ERA ~ WHIP + HR.9, data = pitching_selected)
 summary(model2)
 ```
 
 
 ```{r}
+#Use anova to test significance of adding
 anova(model1, model2)
 ```
 ```{r}

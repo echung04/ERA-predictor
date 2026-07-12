@@ -1,0 +1,259 @@
+---
+title: "Baseball Project"
+author: "Evan Chung"
+date: "2026-04-27"
+output: pdf_document
+---
+```{r}
+library(dplyr)
+library(readr)
+library(purrr)
+setwd("C:/Users/Administrator/Documents/489 work/Project")
+files <- list.files("C:/Users/Administrator/Documents/489 work/Project/Data", pattern = "\\.csv$", full.names = TRUE)
+
+df_original <- files %>%
+  map_dfr(~ read_csv(.x, col_types = cols(.default = col_character())))
+#for this code I used a mixture of looking up on stack overflow and then edited a couple things by myself and using chatGPT for certain syntax I was not familiar with
+```
+
+```{r}
+print(df_original)
+```
+```{r}
+df_original <- df_original %>%
+  select(PitchofPA, PitcherThrows, BatterSide, Outs, Balls, Strikes, TaggedPitchType, PlayResult, RelSpeed, SpinRate, InducedVertBreak, HorzBreak, PlateLocHeight, PlateLocSide, ExitSpeed, Angle, Distance)
+```
+
+```{r}
+df_original
+```
+```{r}
+#df_baseball <- df_baseball %>%
+  #mutate(keep = !is.na(ExitSpeed) | (dplyr::lead(!is.na(ExitSpeed)) & PitchofPA != 1)) %>%
+  #filter(keep) %>%
+  #select(-keep)
+df_baseball <- df_original %>%
+  filter(!is.na(ExitSpeed))
+
+df_baseball <- df_baseball %>%
+  mutate(across(
+    c(PitchofPA, Outs, Balls, Strikes,
+      RelSpeed, SpinRate, InducedVertBreak,
+      HorzBreak, PlateLocHeight, PlateLocSide,
+      ExitSpeed, Angle, Distance),
+    as.numeric
+  ))
+df_baseball
+```
+
+```{r}
+avg_exit <- df_baseball %>%
+  summarise(avg_exit_speed = mean(ExitSpeed, na.rm = TRUE))
+
+print(avg_exit)
+library(ggplot2)
+ggplot(df_baseball, aes(x = ExitSpeed)) +
+  geom_histogram(bins = 30) +
+  labs(title = "Exit Speed Distribution",
+       x = "Exit Speed",
+       y = "Count") +
+  theme_minimal()
+```
+
+MLB classifies a hart hit ball at 95 mph, for this project I will classify it as 90 mph. This is because I am analyzing Division 3 athletes, who on average are not as physically gifted as the average MLB player. 
+```{r}
+df_baseball <- df_baseball %>%
+  mutate(
+    ExitSpeedCategory = case_when(
+      ExitSpeed > 90 ~ "Hard Hit",
+      ExitSpeed >= 70 & ExitSpeed <= 90 ~ "Medium Hit",
+      ExitSpeed < 70 ~ "Soft Hit",
+      TRUE ~ NA_character_
+    )
+  )
+
+df_baseball <- df_baseball %>%
+  mutate(
+    ExitSpeedCategory = factor(
+      ExitSpeedCategory,
+      levels = c("Soft Hit", "Medium Hit", "Hard Hit"),
+      ordered = TRUE
+    )
+  )
+```
+
+
+```{r}
+ggplot(df_baseball, aes(x = ExitSpeedCategory)) +
+  geom_bar() +
+  labs(title = "Distribution of Contact Quality",
+       x = "Contact Category",
+       y = "Count") +
+  theme_minimal()
+```
+
+```{r}
+hard_hit_by_pitch <- df_baseball %>%
+  filter(ExitSpeedCategory == "Hard Hit") %>%
+  group_by(TaggedPitchType) %>%
+  summarise(HardHitCount = n()) %>%
+  arrange(desc(HardHitCount))
+
+print(hard_hit_by_pitch)
+```
+
+```{r}
+hard_hit_rate <- df_baseball %>%
+  group_by(TaggedPitchType) %>%
+  summarise(
+    TotalPitches = n(),
+    HardHits = sum(ExitSpeedCategory == "Hard Hit", na.rm = TRUE),
+    HardHitRate = HardHits / TotalPitches
+  ) %>%
+  arrange(desc(HardHitRate))
+
+print(hard_hit_rate)
+```
+```{r}
+ggplot(hard_hit_rate,
+       aes(x = reorder(TaggedPitchType, HardHitRate),
+           y = HardHitRate)) +
+  geom_bar(stat = "identity") +
+  coord_flip() +
+  labs(title = "Hard Hit Rate by Pitch Type",
+       x = "Pitch Type",
+       y = "Hard Hit Rate") +
+  theme_minimal()
+```
+```{r}
+df_baseball <- df_baseball %>%
+  mutate(Count = paste(Balls, Strikes, sep = "-"))
+hard_hit_count <- df_baseball %>%
+  group_by(Count) %>%
+  summarise(
+    TotalPitches = n(),
+    HardHits = sum(ExitSpeedCategory == "Hard Hit", na.rm = TRUE),
+    HardHitRate = HardHits / TotalPitches
+  ) %>%
+  arrange(desc(HardHitRate))
+
+print(hard_hit_count)
+```
+```{r}
+ggplot(hard_hit_count,
+       aes(x = reorder(Count, HardHitRate),
+           y = HardHitRate)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Hard Hit Rate by Count",
+       x = "Count",
+       y = "Hard Hit Rate") +
+  theme_minimal()
+```
+```{r}
+ggplot(df_baseball,
+       aes(x = PlateLocSide,
+           y = PlateLocHeight,
+           color = ExitSpeedCategory)) +
+
+  geom_point(alpha = 0.5) +
+
+  geom_rect(aes(xmin = -0.7,
+                xmax = 0.7,
+                ymin = 1.7,
+                ymax = 3.5),
+            fill = NA,
+            color = "black",
+            linewidth = 1) +
+
+  labs(title = "Pitch Location vs Contact Quality",
+       x = "Horizontal Location",
+       y = "Vertical Location") +
+
+  theme_minimal()+coord_fixed()
+```
+
+```{r}
+ggplot(filter(df_baseball,
+              ExitSpeedCategory == "Hard Hit"),
+       aes(x = PlateLocSide,
+           y = PlateLocHeight)) +
+
+  geom_point(alpha = 0.5, color = "red") +
+
+  geom_rect(aes(xmin = -0.83,
+                xmax = 0.83,
+                ymin = 1.5,
+                ymax = 3.5),
+            fill = NA,
+            color = "black",
+            linewidth = 1) +
+
+  labs(title = "Locations of Hard Hit Balls",
+       x = "Horizontal Location",
+       y = "Vertical Location") +
+
+  theme_minimal()+coord_fixed()
+```
+
+```{r}
+ggplot(filter(df_baseball,
+              ExitSpeedCategory == "Hard Hit"),
+       aes(x = PlateLocSide,
+           y = PlateLocHeight)) +
+
+  stat_density_2d(aes(fill = after_stat(level)),
+                  geom = "polygon",
+                  alpha = 0.6) +
+
+  geom_rect(aes(xmin = -0.83,
+                xmax = 0.83,
+                ymin = 1.5,
+                ymax = 3.5),
+            fill = NA,
+            color = "black",
+            linewidth = 1) +
+
+  labs(title = "Density of Hard Hit Ball Locations",
+       x = "Horizontal Location",
+       y = "Vertical Location") +
+
+  theme_minimal() +
+  coord_fixed()
+```
+
+```{r}
+exit_model <- lm(
+  ExitSpeed ~ PlateLocSide + PlateLocHeight,
+  data = df_baseball
+)
+
+summary(exit_model)
+```
+```{r}
+movement_model <- lm(
+  ExitSpeed ~  SpinRate +
+             InducedVertBreak +
+             HorzBreak,
+   data = df_baseball
+)
+
+summary(movement_model)
+```
+
+```{r}
+full_model <- lm(
+  ExitSpeed ~ PlateLocSide +
+             PlateLocHeight +
+             RelSpeed +
+             SpinRate +
+             InducedVertBreak +
+             HorzBreak +
+             Balls +
+             Strikes +
+             TaggedPitchType,
+  data = df_baseball
+)
+
+summary(full_model)
+```
+
